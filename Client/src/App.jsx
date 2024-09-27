@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import "./normalize.css";
 
 function App() {
@@ -32,13 +33,16 @@ function App() {
       </div>
 
       <div className="flex-1 flex flex-col bg-white">
-        <div id="chatBox" className="flex-1 p-6 "> 
+        <div id="chatBox" className="flex-1 p-6 ">
           {messages.map((msg, index) => (
-            <div
+            <motion.div
               key={index}
               className={`flex ${
                 msg.type === "user" ? "justify-end" : "justify-start"
               } mb-4`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
               <div
                 className={`max-w-[70%] rounded-lg p-3 ${
@@ -49,12 +53,12 @@ function App() {
               >
                 <p>{msg.content}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         <div className="p-4 bg-white border-t border-gray-200">
-          <div className="relative flex" >
+          <div className="relative flex">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}

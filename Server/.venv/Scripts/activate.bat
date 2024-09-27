@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Ali\OneDrive\Desktop\develop\Chat-Ai\Server\.venv
+set VIRTUAL_ENV=c:\Users\Ali\OneDrive\Desktop\develop\Chat-Ai\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 
