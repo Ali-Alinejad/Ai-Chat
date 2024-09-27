@@ -48,6 +48,19 @@ def get_sports():
     
     return jsonify(sports_data), 200
 
+def create_separator(length=30):
+    return "-" * length + "\n"
+
+def create_separator(length=30):
+    return "\u2500" * length + "\n"
+
+def create_separator(length=40):
+    return "\u2500" * length
+
+def format_text(label, value):
+   
+    return f"{label}: \u202A{value}\u202C"
+
 @app.route('/chat', methods=['POST'])
 def chat():
     user_message = request.json.get('message', '').lower()
@@ -60,22 +73,43 @@ def chat():
         return jsonify({"response": f"تعداد ورزش‌های موجود: {len(sports_data)}"})
     
     elif "لیست ورزش" in user_message:
-        sports_list = ", ".join([sport['title'] for sport in sports_data])
+        sports_list = "، ".join([sport['title'] for sport in sports_data])
         return jsonify({"response": f"لیست ورزش‌ها: {sports_list}"})
     
     elif "ورزش فعال" in user_message:
         active_sports = [sport['title'] for sport in sports_data if sport['active']]
-        return jsonify({"response": f"ورزش‌های فعال: {', '.join(active_sports)}"})
-    
-    elif "جزئیات ورزش" in user_message:
-        sport_name = user_message.split("جزئیات ورزش")[-1].strip()
-        for sport in sports_data:
-            if sport_name.lower() in sport['title'].lower():
-                return jsonify({"response": f"جزئیات {sport['title']}: {sport['description']}, فعال: {'بله' if sport['active'] else 'خیر'}"})
-        return jsonify({"response": "ورزش مورد نظر یافت نشد."})
+        return jsonify({"response": f"ورزش‌های فعال: {'، '.join(active_sports)}"})
     
     else:
-        return jsonify({"response": "متأسفانه نمی‌توانم به این سوال پاسخ دهم. لطفاً درباره تعداد ورزش‌ها، لیست ورزش‌ها، ورزش‌های فعال یا جزئیات یک ورزش خاص بپرسید."})
+  
+        matching_sports = [sport for sport in sports_data if sport['group'].lower() in user_message]
+        
+        if matching_sports:
+            group = matching_sports[0]['group']
+            response = f"اطلاعات گروه ورزشی {group}:\n\n"
+            
+            for sport in matching_sports:
+                response += create_separator() + "\n"
+                response += format_text("عنوان", sport['title']) + "\n"
+                response += format_text("توضیحات", sport.get('description', 'اطلاعات در دسترس نیست')) + "\n"
+                response += format_text("وضعیت", 'فعال' if sport['active'] else 'غیرفعال') + "\n"
+                response += format_text("گروه", sport.get('group', 'نامشخص')) + "\n"
+                response += format_text("کلید", sport['key']) + "\n"
+                response += create_separator() + "\n\n"
+            
+            return jsonify({"response": response.strip()})
+        
+
+        return jsonify({
+            "response": "متأسفانه نمی‌توانم به این سوال پاسخ دهم. لطفاً نام یک گروه ورزشی را بپرسید یا درباره تعداد ورزش‌ها، لیست ورزش‌ها، یا ورزش‌های فعال سوال کنید."
+        })
+@app.route('/', methods=['GET'])
+def home():
+    return "Welcome to the Sports Chat API. Use /sports to get sports data and /chat for asking questions."
 
 if __name__ == '__main__':
+    try:
+        fetch_sports_data()  
+    except requests.RequestException as e:
+        logger.error(f"Initial sports data fetch failed: {str(e)}")
     app.run(debug=True)

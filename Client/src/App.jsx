@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import "./normalize.css";
 
@@ -18,6 +18,44 @@ function App() {
           type: "ai",
           content:
             "اطلاعات ورزشی دریافت شد. چه سوالی دارید؟ می‌توانید درباره تعداد ورزش‌ها، لیست ورزش‌ها، ورزش‌های فعال یا جزئیات یک ورزش خاص بپرسید.",
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching sports data:", error);
+      setMessages([
+        { type: "ai", content: "متأسفانه در دریافت اطلاعات مشکلی پیش آمد." },
+      ]);
+    }
+  };
+  const fetchWeatherData = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/sports");
+      const data = await response.json();
+      setSportsData(data);
+      setMessages([
+        {
+          type: "ai",
+          content:
+            "اطلاعات آب و هوا  دریافت شد.   اسم شهر را وارد کنید     "
+        },
+      ]);
+    } catch (error) {
+      console.error("Error fetching sports data:", error);
+      setMessages([
+        { type: "ai", content: "متأسفانه در دریافت اطلاعات مشکلی پیش آمد." },
+      ]);
+    }
+  };
+  const fetchCurData = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/sports");
+      const data = await response.json();
+      setSportsData(data);
+      setMessages([
+        {
+          type: "ai",
+          content:
+            " اطلاعات ارز ها دریافت شد درمورد چه ارزی میخواهید بدونید ؟ 🪙",
         },
       ]);
     } catch (error) {
@@ -67,12 +105,11 @@ function App() {
 
     return Object.entries(groups).map(([group, sports]) => (
       <div key={group} className="mb-4 ">
-        <h3 className="text-xl font-bold mb-2 ">{group}</h3>
+        <h3 className="text-xl font-thin text-center mb-2 border-t-[1px] ">{group}</h3>
         <ul className="list-disc pl-5">
           {sports.map((sport) => (
-            <li key={sport.key} className="mb-1  border-b-2 ">
-              {sport.title} - {sport.description}
-              {sport.active ? " (فعال)" : " (غیرفعال)"}
+            <li key={sport.key} className="mb-1   text-sm font-extralight text-gray-300   ">
+              {sport.title} {sport.active ? " (فعال)" : " (غیرفعال)"}
             </li>
           ))}
         </ul>
@@ -90,7 +127,19 @@ function App() {
         >
           <span className="mr-2">🔄</span> بروزرسانی اطلاعات ورزشی
         </button>
-        {renderSportsList()}
+        <button
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-lg w-full transition duration-300 ease-in-out transform hover:scale-105 shadow-md mb-4"
+          onClick={fetchWeatherData}
+          >
+          <span className="mr-2">🌡️</span> بروزرسانی اطلاعات آب و هوا
+        </button>
+        <button
+          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-lg w-full transition duration-300 ease-in-out transform hover:scale-105 shadow-md mb-4"
+          onClick={fetchCurData}
+          >
+           بروزرسانی اطلاعات ارز دیجیتال
+        </button>
+          {renderSportsList()}
       </div>
 
       <div className="flex-1 flex flex-col bg-white">
