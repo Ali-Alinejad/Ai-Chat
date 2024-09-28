@@ -27,44 +27,8 @@ function App() {
       ]);
     }
   };
-  const fetchWeatherData = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/sports");
-      const data = await response.json();
-      setSportsData(data);
-      setMessages([
-        {
-          type: "ai",
-          content:
-            "اطلاعات آب و هوا  دریافت شد.   اسم شهر را وارد کنید     "
-        },
-      ]);
-    } catch (error) {
-      console.error("Error fetching sports data:", error);
-      setMessages([
-        { type: "ai", content: "متأسفانه در دریافت اطلاعات مشکلی پیش آمد." },
-      ]);
-    }
-  };
-  const fetchCurData = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/sports");
-      const data = await response.json();
-      setSportsData(data);
-      setMessages([
-        {
-          type: "ai",
-          content:
-            " اطلاعات ارز ها دریافت شد درمورد چه ارزی میخواهید بدونید ؟ 🪙",
-        },
-      ]);
-    } catch (error) {
-      console.error("Error fetching sports data:", error);
-      setMessages([
-        { type: "ai", content: "متأسفانه در دریافت اطلاعات مشکلی پیش آمد." },
-      ]);
-    }
-  };
+
+  
 
   const handleSend = async () => {
     if (input.trim() !== "") {
@@ -127,18 +91,8 @@ function App() {
         >
           <span className="mr-2">🔄</span> بروزرسانی اطلاعات ورزشی
         </button>
-        <button
-          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-lg w-full transition duration-300 ease-in-out transform hover:scale-105 shadow-md mb-4"
-          onClick={fetchWeatherData}
-          >
-          <span className="mr-2">🌡️</span> بروزرسانی اطلاعات آب و هوا
-        </button>
-        <button
-          className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 px-4 rounded-lg w-full transition duration-300 ease-in-out transform hover:scale-105 shadow-md mb-4"
-          onClick={fetchCurData}
-          >
-           بروزرسانی اطلاعات ارز دیجیتال
-        </button>
+      
+       
           {renderSportsList()}
       </div>
 
